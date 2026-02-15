@@ -6,6 +6,10 @@
 
 namespace LinearAlgebra {
 
+// Define static member variables
+std::unique_ptr<Backend> Backend::cpuBackend = nullptr;
+std::unique_ptr<Backend> Backend::gpuBackend = nullptr;
+
 Backend* Backend::getBackend(const Device& device){
     if (device == Device::CPU){
         if (Backend::cpuBackend == nullptr){
@@ -24,7 +28,7 @@ Backend* Backend::getBackend(const Device& device){
 }
 
 // I copied this from ChatGPT - not fully understand its mechanics
-Device Backend::getMemoryLocation(const void* ptr) {
+Device Backend::getPtrDevice(const void* ptr) {
     cudaPointerAttributes attr;
     if (cudaPointerGetAttributes(&attr, ptr) != cudaSuccess) {
         return Device::CPU;

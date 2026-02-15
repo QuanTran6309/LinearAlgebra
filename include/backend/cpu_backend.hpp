@@ -8,7 +8,7 @@ namespace LinearAlgebra {
 
 class CPU_Backend : public Backend {
 private: 
-        CPU_Backend();
+        
 
 public:
 

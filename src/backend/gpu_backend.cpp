@@ -1,4 +1,4 @@
-#include "backend/cpu_backend.hpp"
+#include "backend/gpu_backend.hpp"
 #include <cstdlib>
 #include <cstring>
 #define NOCUDA
@@ -7,7 +7,7 @@
 
 namespace LinearAlgebra {
 
-void *CPU_Backend::allocate(size_t bytes) {
+void *GPU_Backend::allocate(size_t bytes) {
     void *ptr = std::malloc(bytes);
 
     // Handle allocating failure
@@ -19,18 +19,18 @@ void *CPU_Backend::allocate(size_t bytes) {
 }
 
 
-void CPU_Backend::deallocate(void **ptr){
+void GPU_Backend::deallocate(void **ptr){
     std::free(*ptr);
     *ptr = nullptr;
 }
 
 
-void CPU_Backend::copy(void *srcPtr, void *destPtr, size_t bytes){
-    std::memcpy(destPtr, srcPtr, bytes);
+void GPU_Backend::copy(void *srcPtr, void *destPtr, size_t bytes){
+    std::memcpy(srcPtr, destPtr, bytes);
 }
 
 
-void CPU_Backend::add(void *dest, 
+void GPU_Backend::add(void *dest, 
                     const void *src1, 
                     const void *src2, 
                     unsigned int numberOfEntries, 
@@ -39,7 +39,7 @@ void CPU_Backend::add(void *dest,
 
 }
 
-void CPU_Backend::mult(int m, int n, int k,
+void GPU_Backend::mult(int m, int n, int k,
                     const void *src1,
                     const void *src2,
                     void *dest,
@@ -47,5 +47,6 @@ void CPU_Backend::mult(int m, int n, int k,
 {
     
 }
+
 
 }
