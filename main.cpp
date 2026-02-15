@@ -15,7 +15,6 @@ int main(){
     };
     Tensor tensor(tensorPtr, {3, 2, 2}, Type::INT, Device::CPU);
 
-    std::cout << tensor.toString() << std::endl;
-
+    
     return 0;
 }
