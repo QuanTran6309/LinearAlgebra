@@ -14,7 +14,6 @@ public:
 
     void* allocate(size_t bytes) override;
     void deallocate(void **ptr) override;
-    void copy(void *srcPtr, void *destPtr, size_t bytes) override;
 
     void add(void *dest, 
             const void *src1, 

@@ -1,6 +1,6 @@
 #include "backend/cpu_backend.hpp"
 #include <cstdlib>
-#include <cstring>
+
 #define NOCUDA
 
 #include "utils/logger.cuh"
@@ -23,12 +23,6 @@ void CPU_Backend::deallocate(void **ptr){
     std::free(*ptr);
     *ptr = nullptr;
 }
-
-
-void CPU_Backend::copy(void *srcPtr, void *destPtr, size_t bytes){
-    std::memcpy(destPtr, srcPtr, bytes);
-}
-
 
 void CPU_Backend::add(void *dest, 
                     const void *src1, 

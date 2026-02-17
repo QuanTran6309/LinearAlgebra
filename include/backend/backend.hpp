@@ -4,8 +4,6 @@
 #include <memory>
 #include "type.hpp"
 namespace LinearAlgebra {
-
-
     
 class Backend {
 
@@ -20,8 +18,6 @@ public:
     virtual void* allocate(size_t bytes) = 0;
     virtual void deallocate(void **ptr) = 0;
 
-    virtual void copy(void *srcPtr, void *destPtr, size_t bytes) = 0;
-
     virtual void add(void *dest, 
                      const void *src1, 
                      const void *src2, 
@@ -34,10 +30,10 @@ public:
                       void *dest,
                       const Type& type) = 0;
 
-
     // Singleton pattern
     static Backend* getBackend(const Device& device);
     static Device getPtrDevice(const void* ptr);
+    static void copy(void *srcPtr, void *destPtr, size_t bytes);
 };
 
 }

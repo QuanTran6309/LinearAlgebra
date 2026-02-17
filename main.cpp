@@ -13,8 +13,9 @@ int main(){
         6, 7, 8,
         9, 10, 11
     };
-    Tensor tensor(tensorPtr, {3, 2, 2}, Type::INT, Device::CPU);
+    Tensor tensor(tensorPtr, {3, 2, 2}, Type::INT, Device::GPU);
 
+    std::cout << tensor.toString() << std::endl;
     
     return 0;
 }

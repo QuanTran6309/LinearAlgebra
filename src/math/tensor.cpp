@@ -2,6 +2,9 @@
 #include "backend/backend.hpp"
 #include <numeric>
 
+#define NOCUDA
+#include "utils/logger.cuh"
+
 namespace LinearAlgebra {
 
 Tensor::~Tensor(){
@@ -16,29 +19,23 @@ Tensor::Tensor(void *srcPtr, const std::vector<unsigned int>& dimensions, Type t
                   totalEntries(std::accumulate(dimensions.begin(), dimensions.end(), 1, std::multiplies<unsigned int>())),
                   tensorType(type)
 {
-    // Should the provided dimension have at least one 0 number in it,
-    // the initted this->totalEntries will become 0
-    // This is invalid
-    if (this->totalEntries == 0){
-        LOGEXCEPTION("Invalid tensor dimensions");
-    }
-
     // Keep track of the total size of the tensor in bytes
     this->tensorSize = this->totalEntries * typeSize(this->tensorType);
+    if (this->tensorSize <= 0){
+        LOGEXCEPTION("Invalid tensor format or type");
+    }
 
     // Get a backend pointer
     Backend *backend = Backend::getBackend(device);
 
     // Using the backend pointer to allocate a chunk of memory for this tensor
     this->tensorPtr = backend->allocate(this->tensorSize);
-    backend->copy(srcPtr, this->tensorPtr, this->tensorSize);
+    Backend::copy(srcPtr, this->tensorPtr, this->tensorSize);
 }
 
 size_t Tensor::getTensorSize(){
     return this->tensorSize;
 }
-
-
 
 
 /**
@@ -84,11 +81,10 @@ std::string Tensor::toString(){
     // must first copy to the CPU first to print
     bool isTensorPtrOnCPU = Backend::getPtrDevice(bufferPtr) == Device::CPU;
     if (!isTensorPtrOnCPU){
-        size_t num_bytes = this->entrySize * this->totalEntries;
-        bufferPtr = std::malloc(num_bytes);
-        Backend *backend = Backend::getBackend(Device::CPU);
-        
+        bufferPtr = std::malloc(this->tensorSize);
+        Backend::copy(this->tensorPtr, bufferPtr, this->tensorSize);
     }
+
     std::string buffer;
 
     // This pattern is used widely across this project to auto detecting the tensor type

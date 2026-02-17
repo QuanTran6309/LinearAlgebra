@@ -1,34 +1,23 @@
 #include "backend/gpu_backend.hpp"
 #include <cstdlib>
 #include <cstring>
-#define NOCUDA
 
 #include "utils/logger.cuh"
+
 
 namespace LinearAlgebra {
 
 void *GPU_Backend::allocate(size_t bytes) {
-    void *ptr = std::malloc(bytes);
-
-    // Handle allocating failure
-    if (ptr == nullptr){
-        LOGEXCEPTION("Failed to allocate " + std::to_string(bytes) + " on memory");
-    }
-
+    void *ptr = nullptr;
+    CUDA_ERR_CHECK(cudaMalloc(&ptr, bytes));
     return ptr;
 }
 
 
 void GPU_Backend::deallocate(void **ptr){
-    std::free(*ptr);
+    CUDA_ERR_CHECK(cudaFree(*ptr));
     *ptr = nullptr;
 }
-
-
-void GPU_Backend::copy(void *srcPtr, void *destPtr, size_t bytes){
-    std::memcpy(srcPtr, destPtr, bytes);
-}
-
 
 void GPU_Backend::add(void *dest, 
                     const void *src1, 

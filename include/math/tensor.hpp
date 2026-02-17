@@ -14,7 +14,6 @@ protected:
     void *tensorPtr;
     std::vector<unsigned int> dimensions;
     unsigned int totalEntries;
-    unsigned int entrySize;      // The size of the TensorType type
     Type tensorType;
     size_t tensorSize;
 public: 

@@ -2,11 +2,6 @@
 #ifndef TENSOR_TYPE
 #define TENSOR_TYPE
 
-#define NOCUDA
-
-
-#include "utils/logger.cuh"
-
 namespace LinearAlgebra {
 
 // Supported tensor type of the library
@@ -30,7 +25,7 @@ inline unsigned int typeSize(Type type){
         case Type::DOUBLE:
             return 8;
         default: 
-            LOGEXCEPTION("Unrecognized data type")
+            return 0;
     }
 }
 

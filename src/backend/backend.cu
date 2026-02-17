@@ -1,8 +1,8 @@
 #include "backend/backend.hpp"
 #include "backend/cpu_backend.hpp"
 #include "backend/gpu_backend.hpp"
-
-#include <cublas_v2.h>
+#include <cstring>
+#include "utils/logger.cuh"
 
 namespace LinearAlgebra {
 
@@ -40,8 +40,33 @@ Device Backend::getPtrDevice(const void* ptr) {
     #else
         if (attr.memoryType == cudaMemoryTypeDevice) return Device::GPU;
     #endif
-
         return Device::CPU;
+}
+
+
+void Backend::copy(void *srcPtr, void *destPtr, size_t bytes){
+    const bool isDestPtrOnGPU = Backend::getPtrDevice(destPtr) == Device::GPU;
+    const bool isSrcPtrOnGPU = Backend::getPtrDevice(srcPtr) == Device::GPU;
+
+    // Both on GPU
+    if (isDestPtrOnGPU && isSrcPtrOnGPU){
+        CUDA_ERR_CHECK(cudaMemcpy(destPtr, srcPtr, bytes, cudaMemcpyDeviceToDevice));
+    }
+
+    // Dest on GPU - Src on CPU
+    else if (isDestPtrOnGPU && !isSrcPtrOnGPU) {
+        CUDA_ERR_CHECK(cudaMemcpy(destPtr, srcPtr, bytes, cudaMemcpyHostToDevice));
+    }
+
+    // Dest on CPU - Src on GPU
+    else if (!isDestPtrOnGPU && isSrcPtrOnGPU) {
+        CUDA_ERR_CHECK(cudaMemcpy(destPtr, srcPtr, bytes, cudaMemcpyDeviceToHost));
+    }
+
+    // Both on CPU
+    else {
+        std::memcpy(destPtr, srcPtr, bytes);
+    }
 }
 
 
