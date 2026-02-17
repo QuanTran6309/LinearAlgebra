@@ -5,5 +5,5 @@
 
 3. Do the same for GPU.
 
-5. Implement matrix, inherit from Tensor
-6. Implement matrix multiplication
+4. Implement matrix, inherit from Tensor
+5. Implement matrix multiplication

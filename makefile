@@ -39,3 +39,6 @@ clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
 .PHONY: all clean
+
+
+#g++ main.cpp -Iinclude -L. -llinearalgebra -o main
